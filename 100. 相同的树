@@ -1,0 +1,42 @@
+100. 相同的树
+给你两棵二叉树的根节点 p 和 q ，编写一个函数来检验这两棵树是否相同。
+
+如果两个树在结构上相同，并且节点具有相同的值，则认为它们是相同的。
+思路：
+
+解法:判断两个相同的二叉树是否一样，递归遍历二叉树，如果节点值不一致，肯定不相同，返回结果 ，如果节点值一样，则继续递归左右子节点，递归到最后结果
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
+ * }
+ */
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) {
+            return true;
+        }
+        boolean isSameNode = isSameTreeNode(p, q);
+        if (isSameNode == false) {
+            return false;
+        }
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    }
+
+    public boolean isSameTreeNode(TreeNode p, TreeNode q) {
+        if (p != null && q != null) {
+            return p.val == q.val;
+        }
+        return false;
+    }
+}
