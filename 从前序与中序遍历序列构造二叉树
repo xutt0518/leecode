@@ -1,0 +1,54 @@
+105. 从前序与中序遍历序列构造二叉树
+
+给定两个整数数组 preorder 和 inorder ，其中 preorder 是二叉树的先序遍历， inorder 是同一棵树的中序遍历，请构造二叉树并返回其根节点。
+先序遍历：先根节点，在左子树，右子树
+中序遍历：先左子树，再根节点，右子树
+思路，
+显示Map记录中序遍历的位置
+递归先序遍历
+先序遍历的第一个值肯定是根节点，根据根节点，找到再中序遍历中的位置，左侧是左子树，右侧是右子树，先序遍历的根节点+（中序遍历左子树的lengeh）也是左子树的终点，根节点+中序遍历左子树的lengeh+1，时右子树的起点
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ * int val;
+ * TreeNode left;
+ * TreeNode right;
+ * TreeNode() {}
+ * TreeNode(int val) { this.val = val; }
+ * TreeNode(int val, TreeNode left, TreeNode right) {
+ * this.val = val;
+ * this.left = left;
+ * this.right = right;
+ * }
+ * }
+ */
+class Solution {
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i], i);
+        }
+
+        TreeNode root = buildChildTree(map, preorder, inorder, 0, preorder.length-1, 0,  preorder.length-1);
+        return root;
+    }
+
+    public TreeNode buildChildTree(HashMap<Integer, Integer> hashMap, int[] preorder, int[] inorder, int preleft,
+            int preright, int inorderleft, int inorderright) {
+        
+        if (preleft > preright) {
+            return null;
+        }
+
+        int value = preorder[preleft];// 先序遍历的第一个肯定是根节点；
+        int inorderRoot = hashMap.get(value);//根据根节点，在中序遍历中找到根节点的位置
+        int size = inorderRoot - inorderleft;//当根节点左子树的节点个数
+        TreeNode root = new TreeNode(value);
+        root.left = buildChildTree(hashMap, preorder, inorder, preleft+1, preleft + size, inorderleft,
+                inorderRoot-1);
+        root.right = buildChildTree(hashMap, preorder, inorder, preleft+size+1, preright,
+                inorderRoot + 1, inorderright);
+        return root;
+    }
+}
