@@ -1,0 +1,40 @@
+106. 从中序与后序遍历序列构造二叉树
+已解答
+中等
+相关标签
+相关企业
+给定两个整数数组 inorder 和 postorder ，其中 inorder 是二叉树的中序遍历， postorder 是同一棵树的后序遍历，请你构造并返回这颗 二叉树 。
+思路 同从前序遍历和中序遍历一样，也是把中序遍历存储在map中，再根据从后序遍历获取根节点，获取左子树节点的个数和右子树节点的个数，递归遍历左右子树，直至子节点为null
+代码;
+class Solution {
+    public HashMap<Integer, Integer> map = new HashMap<>();
+
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        for (int i = 0; i < inorder.length; i++) {
+            map.put(inorder[i], i);
+        }
+
+        TreeNode root = buildChildTree(inorder, postorder, 0, inorder.length - 1, 0, inorder.length - 1);
+        return root;
+    }
+
+    public TreeNode buildChildTree(int[] inorder, int[] postorder, int in_left, int in_right,
+            int po_left, int po_right) {
+        if (po_left > po_right) {
+            return null;
+        }
+        TreeNode root = new TreeNode();
+        int root_value = postorder[po_right];
+        int in_root_postion = map.get(root_value);
+        int in_size = in_root_postion - in_left;
+        TreeNode left = buildChildTree(inorder, postorder, in_left, in_root_postion - 1, po_left,
+                po_left + in_size - 1);
+        TreeNode right = buildChildTree(inorder, postorder, in_root_postion + 1, in_right, po_left + in_size,
+                po_right - 1);
+        root.val = root_value;
+        root.left = left;
+        root.right = right;
+        return root;
+    }
+
+}
